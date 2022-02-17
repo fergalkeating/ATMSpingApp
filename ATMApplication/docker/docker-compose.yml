@@ -1,0 +1,29 @@
+version: '3.3'
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3308:3308'
+    expose:
+      - '3308'
+    volumes:
+      - './.mysql-data/db:/var/lib/mysql'
+  app:
+    build:  ./app
+    container_name: solution-insight-service
+    deploy:
+      resources:
+        limits:
+          cpus: '1.00'
+          memory: 900M
+volumes:
+  my-db:
+
+networks:
+  application-service-net: { }
