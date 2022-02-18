@@ -116,7 +116,7 @@ class AccountServiceTest {
                         .accountId(ACCOUNT_ID)
                         .build();
 
-        Mockito.when(customerAccountRepository.findByAccountId(ACCOUNT_ID)).thenReturn(Optional.of(null));
+        Mockito.when(customerAccountRepository.findByAccountId(ACCOUNT_ID)).thenReturn(Optional.empty());
 
         RetrieveAccountBalanceRequestDto retrieveAccountBalanceRequestDto =
                 RetrieveAccountBalanceRequestDto.builder()

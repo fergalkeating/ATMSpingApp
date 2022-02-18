@@ -37,7 +37,7 @@ public class AccountService {
     public RetrieveAccountBalanceResponseDto getAccountBalance(RetrieveAccountBalanceRequestDto retrieveAccountBalanceRequestDto) {
         log.info("Retrieving database account " + retrieveAccountBalanceRequestDto.getAccountId());
         Optional<CustomerAccount> customerAccount = customerAccountRepository.findByAccountId(retrieveAccountBalanceRequestDto.getAccountId());
-        return customerAccount.map(account -> RetrieveAccountBalanceResponseDto.builder().accountBalance(String.valueOf(account.getAccountBalance())).build()).orElse(null);
+        return customerAccount.map(account -> RetrieveAccountBalanceResponseDto.builder().accountId(account.getAccountId()).accountBalance(String.valueOf(account.getAccountBalance())).build()).orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -80,7 +80,8 @@ public class AccountService {
         customerAccountRepository.save(accountToUpdate);
 
         return WithdrawFromAccountResponseDto.builder()
-                .accountId(accountId).
+                .accountId(accountId)
+                .accountBalance(String.valueOf(accountToUpdate.getAccountBalance())).
                 amountWithdrawn(String.valueOf(withdrawalAmountRequested)).build();
     }
 

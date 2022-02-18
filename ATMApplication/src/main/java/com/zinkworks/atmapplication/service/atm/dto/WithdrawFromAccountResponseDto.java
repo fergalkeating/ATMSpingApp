@@ -7,5 +7,6 @@ import lombok.Getter;
 @Builder
 public class WithdrawFromAccountResponseDto {
     String accountId;
+    String accountBalance;
     String amountWithdrawn;
 }

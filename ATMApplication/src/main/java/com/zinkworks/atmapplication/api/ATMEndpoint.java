@@ -1,4 +1,5 @@
 package com.zinkworks.atmapplication.api;
+
 import com.zinkworks.atmapplication.api.exception.InvalidAccountException;
 import com.zinkworks.atmapplication.common.rest.exception.AccountDoesNotMatchAuthorizationException;
 import com.zinkworks.atmapplication.service.atm.account.AccountService;
@@ -18,30 +19,44 @@ import java.text.MessageFormat;
 
 @Controller
 @Slf4j
-@RequestMapping(path="/atm")
+@RequestMapping(path = "/atm")
 public class ATMEndpoint {
 
     private final AccountService accountService;
 
     Authentication auth;
 
-    public ATMEndpoint(final AccountService accountService)
-    {
+    public ATMEndpoint(final AccountService accountService) {
         this.accountService = accountService;
     }
 
-
-    //TODO Add Versioning to API.
-
-    @GetMapping(path="/account/{accountId}")
+    @PatchMapping(path = "/account/{accountId}/withdraw")
     public @ResponseBody
-    ResponseEntity getBalance (@PathVariable(required = true) String accountId) {
+    ResponseEntity withdrawFromAccount(
+            @PathVariable(name = "accountId") String accountId,
+            @RequestParam(name = "amount") String amount
+    ) {
+        log.info(String.format("Received Withdraw Balance Request of amount %s", amount));
+        WithdrawFromAccountRequestDto withdrawFromAccountRequestDto = WithdrawFromAccountRequestDto.builder()
+                .accountId(accountId)
+                .withdrawalAmount(Integer.parseInt(amount))
+                .build();
+
+        WithdrawFromAccountResponseDto withdrawFromAccountResponseDto = accountService.withdrawFromAccount(withdrawFromAccountRequestDto);
+        //Todo Once API confirmed, create API request / response objects instead of using DTO in response.
+        //TODO Also Add Versioning to API.
+        return ResponseEntity.ok(withdrawFromAccountResponseDto);
+    }
+
+
+    @GetMapping(path = "/account/{accountId}")
+    public @ResponseBody
+    ResponseEntity getBalance(@PathVariable(required = true) String accountId) {
 
         auth = SecurityContextHolder.getContext().getAuthentication();
         log.info("received balance request for account: {}", accountId);
 
-        if(!accountId.equals(auth.getName()))
-        {
+        if (!accountId.equals(auth.getName())) {
             throw new AccountDoesNotMatchAuthorizationException(accountId);
         }
 
@@ -51,31 +66,13 @@ public class ATMEndpoint {
 
         RetrieveAccountBalanceResponseDto responseDto = accountService.getAccountBalance(retrieveAccountBalanceRequestDto);
 
-        if(responseDto!=null)
-        {
-            return new ResponseEntity(MessageFormat.format("You have a balance of {0}.", responseDto.getAccountBalance()), HttpStatus.OK);
-            //TODO Update response Entity with Own type in common code. Containing timestamp, Operation, correlationID for Request Logging
-        }
-        else
-        {
+        if (responseDto != null) {
+            return ResponseEntity.ok(responseDto);
+        } else {
             throw new InvalidAccountException("accountId");
         }
     }
 
-    @GetMapping(path="/account/withdraw/{accountId}/{amount}")
-    public @ResponseBody
-    ResponseEntity withdrawFromAccount (
-            @PathVariable(name="accountId") String accountId,
-            @PathVariable(name="amount") String amount){
-        log.info(String.format("Received Withdraw Balance Request of amount %s", amount));
-        WithdrawFromAccountRequestDto withdrawFromAccountRequestDto = WithdrawFromAccountRequestDto.builder()
-                .accountId(accountId)
-                .withdrawalAmount(Integer.parseInt(amount))
-                .build();
-
-        WithdrawFromAccountResponseDto withdrawFromAccountResponseDto = accountService.withdrawFromAccount(withdrawFromAccountRequestDto);
-        return new ResponseEntity(MessageFormat.format("You have withdrawn {0}.", withdrawFromAccountResponseDto.getAmountWithdrawn()), HttpStatus.OK);
-    }
 }
 
 

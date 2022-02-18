@@ -6,5 +6,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class RetrieveAccountBalanceResponseDto {
+    String accountId;
     String accountBalance;
 }

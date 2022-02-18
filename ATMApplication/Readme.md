@@ -11,10 +11,20 @@ Please update this documentation as you see fit as you are altering the code.
 ## Running the application.
 Requests are submitted using Base64 encoded parameters of the accountid and PIN. These represent the typical username and password combination that utilises the authorization header in conjunction with SSL configuration (see below)
 
+###Docker Container. 
+Running ./run-app-inside-docker.sh (testing within WSL2 on windows with dockerForWindows using WSL2) will autoamtically build the application and copy the jar into its own docker container. 
+The docker setup instantiates mysql database on the same network, accessible on port 3308 (preventing local conflict). 
+
+###Local setup. 
+for setup locally you can have your own database instance setup (update the application.properties accordingly with local user and password)
+Run the application with the Spring-boot:run maven command. 
+
+
 ###Sample Requests
-GET https://localhost:8080/atm/account/1234  user(1234) password(1234)
-GET https://localhost:8080/heartbeat NO Auth
-POST https://localhost:8080/atm/account/withdraw/1234/290 user(1234) password(1234)
+Note for Docker urls below its mapped to port 8081. It will run on 8080 locally. 
+GET https://localhost:8081/atm/account/1234  user(1234) password(1234)
+GET https://localhost:8081/heartbeat NO Auth
+PATCH https://localhost:8081/atm/account/1234/withdraw?amount=20 user(1234) password(1234)
 
 ##Security
 
@@ -24,7 +34,7 @@ For windows (suggested development environment) You can install the local atmapp
 You should to restart browser after installing your certificate. 
 
 For certificate installation on postman you can use https://learning.postman.com/docs/sending-requests/certificates/ 
-
+Note that CSRF security is disabled in ATMAppSecurityConfig for local testing. 
 ###
 
 The code demonstrates using an authentication mechanism to authorize customers accountIds and pin codes to automatically reject invalid requests. 
@@ -34,7 +44,7 @@ Note: The storing of 4 digit PIN codes in the database as hashcode is not consid
 
 
 ## Testing the application
-Tests are split up into two categories. Basic unit tests to cover functionality of each modle. And integration tests to test the complete API. 
+Tests are split up into two categories. Basic unit tests to cover functionality of each modle. And an integration test to test the complete API. 
 
 ##TODO
 * add rateLimiting of requests to prevent brute force attacks. 

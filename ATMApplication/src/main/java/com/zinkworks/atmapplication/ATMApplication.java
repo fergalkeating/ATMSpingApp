@@ -77,7 +77,7 @@ public class ATMApplication {
 			customerAccountRepository.save(CustomerAccount.builder().accountId("1235").accountBalance(10).pin("$2a$11$h2rsjI3WrUcHAjeie7mHmua5Mh812kIyibni1NAPU2FuJKLy9qWXW").build());
 			customerAccountRepository.save(CustomerAccount.builder().accountId("1236").accountBalance(40).pin("$2a$11$h2rsjI3WrUcHAjeie7mHmua5Mh812kIyibni1NAPU2FuJKLy9qWXW").build());
 			customerAccountRepository.save(CustomerAccount.builder().accountId("1237").accountBalance(90).pin("$2a$11$h2rsjI3WrUcHAjeie7mHmua5Mh812kIyibni1NAPU2FuJKLy9qWXW").build());
-			customerAccountRepository.save(CustomerAccount.builder().accountId("1238").accountBalance(350).pin("$2a$11$h2rsjI3WrUcHAjeie7mHmua5Mh812kIyibni1NAPU2FuJKLy9qWXW").build());
+			customerAccountRepository.save(CustomerAccount.builder().accountId("1238").accountBalance(1600).pin("$2a$11$h2rsjI3WrUcHAjeie7mHmua5Mh812kIyibni1NAPU2FuJKLy9qWXW").build());
 		};
 	}
 
@@ -105,7 +105,9 @@ public class ATMApplication {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 
-			http.antMatcher("/atm/**").authorizeRequests().anyRequest().authenticated()
+			http.antMatcher("/atm/**").
+					cors().and().csrf().disable().
+					authorizeRequests().anyRequest().authenticated()
 					.and().httpBasic();
 		}
 

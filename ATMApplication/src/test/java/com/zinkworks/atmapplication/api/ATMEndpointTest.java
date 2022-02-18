@@ -20,9 +20,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.text.MessageFormat;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(SpringExtension.class)
 class ATMEndpointTest {
@@ -49,6 +51,7 @@ class ATMEndpointTest {
         WithdrawFromAccountResponseDto withdrawFromAccountResponseDto =
                 WithdrawFromAccountResponseDto.builder()
                         .accountId(ACCOUNT_ID)
+                        .accountBalance("280")
                         .amountWithdrawn(String.valueOf(WITHDRAW_AMOUNT_20))
                         .build();
 
@@ -56,8 +59,8 @@ class ATMEndpointTest {
         Mockito.when(accountService.withdrawFromAccount(any(WithdrawFromAccountRequestDto.class))).thenReturn(withdrawFromAccountResponseDto);
 
         ResponseEntity response = atmEndpoint.withdrawFromAccount(ACCOUNT_ID, String.valueOf(WITHDRAW_AMOUNT_20));
-
-        assertEquals(MessageFormat.format("You have withdrawn {0}.", WITHDRAW_AMOUNT_20), response.getBody());
+        WithdrawFromAccountResponseDto responseBody = (WithdrawFromAccountResponseDto) response.getBody();
+        assertEquals(responseBody, withdrawFromAccountResponseDto);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -70,14 +73,15 @@ class ATMEndpointTest {
         RetrieveAccountBalanceResponseDto retrieveAccountBalanceResponseDto =
                 RetrieveAccountBalanceResponseDto
                         .builder()
+                        .accountId(ACCOUNT_ID)
                         .accountBalance(ACCOUNT_BALANCE)
                         .build();
 
         Mockito.when(accountService.getAccountBalance(any(RetrieveAccountBalanceRequestDto.class))).thenReturn(retrieveAccountBalanceResponseDto);
 
         ResponseEntity response = atmEndpoint.getBalance(ACCOUNT_ID);
-
-        assertEquals(MessageFormat.format("You have a balance of {0}.", ACCOUNT_BALANCE), response.getBody());
+        RetrieveAccountBalanceResponseDto responseBody = (RetrieveAccountBalanceResponseDto) response.getBody();
+        assertEquals(responseBody, retrieveAccountBalanceResponseDto);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
     }
