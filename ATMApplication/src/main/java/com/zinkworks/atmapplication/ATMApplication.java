@@ -78,6 +78,9 @@ public class ATMApplication {
 			customerAccountRepository.save(CustomerAccount.builder().accountId("1236").accountBalance(40).pin("$2a$11$h2rsjI3WrUcHAjeie7mHmua5Mh812kIyibni1NAPU2FuJKLy9qWXW").build());
 			customerAccountRepository.save(CustomerAccount.builder().accountId("1237").accountBalance(90).pin("$2a$11$h2rsjI3WrUcHAjeie7mHmua5Mh812kIyibni1NAPU2FuJKLy9qWXW").build());
 			customerAccountRepository.save(CustomerAccount.builder().accountId("1238").accountBalance(1600).pin("$2a$11$h2rsjI3WrUcHAjeie7mHmua5Mh812kIyibni1NAPU2FuJKLy9qWXW").build());
+
+			customerAccountRepository.save(CustomerAccount.builder().accountId("123456789").accountBalance(800).pin("$2a$11$h2rsjI3WrUcHAjeie7mHmua5Mh812kIyibni1NAPU2FuJKLy9qWXW").build());
+			customerAccountRepository.save(CustomerAccount.builder().accountId("987654321").accountBalance(1230).pin("$2a$11$5J8HDqIyOQ19p1Z2Bc/kCexMN2x004u6e46mDLeHj0lvmHjGXQqEK").build());
 		};
 	}
 

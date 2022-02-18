@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.text.MessageFormat;
@@ -100,5 +101,12 @@ class ATMEndpointTest {
                 atmEndpoint.getBalance(ACCOUNT_ID));
 
         assertEquals(MessageFormat.format("The user provided does not have access to an account with accountId accountId.", ACCOUNT_BALANCE), exception.getErrorMessage());
+    }
+
+    @Test
+    public void encode() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(11);
+        String result = encoder.encode("4321");
+        System.out.println("THE CODE IS:" + result);
     }
 }
